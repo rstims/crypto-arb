@@ -1,8 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { 
+  exchangeChange, 
+} from '../redux/reducers/exchangeReducer';
 import { default as ExchangeView } from '../views/exchange';
 
-export default class Exchange extends React.Component{
-  onRemove = id => () => this.props.onRemove(id)
+class Exchange extends React.Component{
+
+  onRemove = id => (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    this.props.onRemove(id)
+  }
 
   render() {
     return <ExchangeView 
@@ -12,3 +22,16 @@ export default class Exchange extends React.Component{
   }  
 }  
 
+const mapStateToProps = state => ({
+  exchangeValue: state.exchange.exchange,
+  currentPair: state.exchange.currentPair,
+  pairs: state.exchange.pairs,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({
+    exchangeChange,
+  }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Exchange);
